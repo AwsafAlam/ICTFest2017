@@ -36,6 +36,7 @@
         </activity>
 
         <activity
+            android:theme="@style/Theme.Design.NoActionBar"
             android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 
@@ -16,29 +17,41 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     public  final int RC_SIGN_IN = 1;
+    protected FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(
-                                Arrays.asList(
-                                        new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build()))
-                        .build(),
-                RC_SIGN_IN);
+
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RC_SIGN_IN){
-            if(requestCode == RESULT_OK){
+        if(requestCode == RC_SIGN_IN){
+            if(resultCode == RESULT_OK){
                 startActivity(new Intent(MainActivity.this,MapsActivity.class));
             }
+        }
+    }
+
+    public void login(View view) {
+        if(mFirebaseAuth.getCurrentUser() != null) {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(
+                                    Arrays.asList(
+                                            new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build()))
+                            .build(),
+                    RC_SIGN_IN);
+        }
+        else{
+            startActivity(new Intent(MainActivity.this,MapsActivity.class));
         }
     }
 }
