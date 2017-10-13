@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        if(mFirebaseAuth.getCurrentUser() != null) {
+        if(mFirebaseAuth.getCurrentUser() == null) {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
