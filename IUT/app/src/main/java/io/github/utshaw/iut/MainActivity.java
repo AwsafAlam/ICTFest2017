@@ -1,5 +1,6 @@
 package io.github.utshaw.iut;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -29,5 +30,15 @@ public class MainActivity extends AppCompatActivity {
                                         new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build()))
                         .build(),
                 RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RC_SIGN_IN){
+            if(requestCode == RESULT_OK){
+                startActivity(new Intent(MainActivity.this,MapsActivity.class));
+            }
+        }
     }
 }
