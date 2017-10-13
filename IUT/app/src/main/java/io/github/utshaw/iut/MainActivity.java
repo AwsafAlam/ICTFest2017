@@ -71,17 +71,17 @@ public class MainActivity extends AppCompatActivity {
                     RC_SIGN_IN);
         }
         else{
-//            startActivity(new Intent(MainActivity.this,TempActitivity.class));
-            try {
-                Intent intent =
-                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                .build(this);
-                startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-            } catch (GooglePlayServicesRepairableException e) {
-                // TODO: Handle the error.
-            } catch (GooglePlayServicesNotAvailableException e) {
-                // TODO: Handle the error.
-            }
+            startActivity(new Intent(MainActivity.this,MapsActivity.class));
+//            try {
+//                Intent intent =
+//                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+//                                .build(this);
+//                startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+//            } catch (GooglePlayServicesRepairableException e) {
+//                // TODO: Handle the error.
+//            } catch (GooglePlayServicesNotAvailableException e) {
+//                // TODO: Handle the error.
+//            }
 
         }
     }

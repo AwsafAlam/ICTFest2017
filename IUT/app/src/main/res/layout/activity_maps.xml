@@ -6,13 +6,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-<fragment
-
-    android:id="@+id/place_autocomplete_fragment"
+<LinearLayout
+    android:id="@+id/search_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-    />
+    android:layout_height="wrap_content">
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        />
+</LinearLayout>
 
 <fragment
     android:id="@+id/map"
