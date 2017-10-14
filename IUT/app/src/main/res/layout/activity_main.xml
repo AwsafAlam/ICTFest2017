@@ -5,14 +5,40 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/grad"/>
+        android:background="@drawable/bg"/>
+
+    <ImageView
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/img"
+        android:src="@drawable/logo"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:layout_below="@+id/img"
+        android:padding="12dp"
+        android:layout_margin="10dp"
+        android:id="@+id/Name"
+        android:background="@drawable/edittextstyle"
+        />
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/Name"
+        android:background="@drawable/edittextstyle"
         android:onClick="login"
         android:text="LoGIn"
         android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+   />
 
 
 

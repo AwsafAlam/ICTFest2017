@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -26,13 +27,15 @@ public class MainActivity extends AppCompatActivity {
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     protected FirebaseAuth mFirebaseAuth;
 
+    private TextView name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-
+        name = (TextView) findViewById(R.id.Name);
 
     }
 
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
+
+        String userame = name.getText().toString();
+
         if(mFirebaseAuth.getCurrentUser() == null) {
             startActivityForResult(
                     AuthUI.getInstance()
