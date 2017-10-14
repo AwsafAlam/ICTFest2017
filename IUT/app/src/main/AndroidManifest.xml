@@ -48,6 +48,10 @@
         <activity android:name=".TempActitivity">
 
         </activity>
+
+        <activity android:name=".hospitals.BusListActivity">
+
+        </activity>
     </application>
 
 </manifest>

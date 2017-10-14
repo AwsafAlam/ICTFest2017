@@ -3,13 +3,17 @@ package io.github.utshaw.iut;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.IntentCompat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -25,18 +29,23 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import io.github.utshaw.iut.hospitals.BusListActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener{
 
     private static final String TAG = "Utshaw";
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -46,11 +55,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mlocation;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private PolylineOptions polyLine;
+    private BottomNavigationView mBottomNavigationView;
+    int PLACE_PICKER_REQUEST = 1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(item.getItemId() == R.id.bottom_bus){
+
+                    Intent intent = new Intent(MapsActivity.this, BusListActivity.class);
+                    startActivity(intent);
+//                    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                    try {
+//                        startActivityForResult(builder.build(MapsActivity.this), PLACE_PICKER_REQUEST);
+//                    } catch (GooglePlayServicesRepairableException e) {
+//                        e.printStackTrace();
+//                    } catch (GooglePlayServicesNotAvailableException e) {
+//                        e.printStackTrace();
+//                    }
+                }
+                return false;
+            }
+        });
+
+        polyLine = new PolylineOptions().color(
+                Color.BLUE).width((float) 7.0);
 
         mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
@@ -86,8 +125,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 MarkerOptions options = new MarkerOptions()
                         .position(l)
                         .title("Your destination");
+
                 mMap.addMarker(options);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((l),9.0f));
+
+
+                polyLine.add(l);
+
+
+                mMap.addPolyline(polyLine);
             }
 
             @Override
@@ -142,6 +188,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
+            }
+        }
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -231,9 +284,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
         LocationInfo.setLat(currentLatitude);
-        LocationInfo.setLat(currentLongitude);
+        LocationInfo.setLon(currentLongitude);
 
         LatLng latLng = new LatLng(currentLatitude,currentLongitude);
+        polyLine.add(latLng);
+        mMap.addPolyline(polyLine);
 
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
@@ -267,4 +322,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
+
+
 }
