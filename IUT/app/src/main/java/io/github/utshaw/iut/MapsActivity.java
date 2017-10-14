@@ -24,6 +24,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -40,8 +42,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     private GoogleMap mMap;
-
-
+    private PlaceAutocompleteFragment autocompleteFragment;
+    private Location mlocation;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
@@ -63,6 +65,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
 
+         autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName());
+                Toast.makeText(MapsActivity.this, "Paisii ", Toast.LENGTH_SHORT).show();
+//                Location location = new Location("");
+//                LatLng l = place.getLatLng();
+//                location.setLatitude(l.latitude);
+//                location.setLongitude(l.longitude);
+//                mlocation = location;
+//                handleNewLocation(location);
+
+                LatLng l = place.getLatLng();
+
+                MarkerOptions options = new MarkerOptions()
+                        .position(l)
+                        .title("Your destination");
+                mMap.addMarker(options);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((l),9.0f));
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -100,6 +133,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 Log.i("Utshaw", "Place: " + place.getName());
+                Toast.makeText(MapsActivity.this, "Activity ", Toast.LENGTH_LONG).show();
+
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
@@ -116,15 +151,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(LocationInfo.getLat(),LocationInfo.getLon());
-//        LatLngBounds DHAKA = new LatLngBounds(
-//                new LatLng(20, 80), new LatLng(30, 100));
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DHAKA.getCenter(), 10));
-
-        mMap.setMinZoomPreference(6.0f);
+//        LatLng sydney = new LatLng(LocationInfo.getLat(),LocationInfo.getLon());
+////        LatLngBounds DHAKA = new LatLngBounds(
+////                new LatLng(20, 80), new LatLng(30, 100));
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//
+////        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DHAKA.getCenter(), 10));
+//
+//        mMap.setMinZoomPreference(6.0f);
 
 
 
@@ -173,16 +208,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            if(!mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.connect();
-            }
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-
+//        if (location == null) {
+//            if(!mGoogleApiClient.isConnected()) {
+//                mGoogleApiClient.connect();
+//            }
+//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+//
+//        }
+//        else {
+//            Toast.makeText(MapsActivity.this, "Connected ", Toast.LENGTH_SHORT).show();
+//
+//            handleNewLocation(location);
+//            mlocation = location;
+//        }
+        if(!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
         }
-        else {
-            handleNewLocation(location);
-        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     private void handleNewLocation(Location location) {
@@ -198,6 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .title("Your position");
         mMap.addMarker(options);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((latLng),16.0f));
+        Toast.makeText(this, "Handle new location", Toast.LENGTH_SHORT).show();
 
         if(mGoogleApiClient.isConnected()){
             mGoogleApiClient.disconnect();

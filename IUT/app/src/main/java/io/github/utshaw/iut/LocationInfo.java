@@ -7,7 +7,7 @@ package io.github.utshaw.iut;
 public class LocationInfo {
 
     private static double lat = 23.7595711;
-    private static double lon = 90.375337;
+        private static double lon = 90.375337;
 
     public static double getLon() {
         return lon;
