@@ -1,11 +1,15 @@
 package io.github.utshaw.iut;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -26,13 +30,19 @@ public class MainActivity extends AppCompatActivity {
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     protected FirebaseAuth mFirebaseAuth;
 
+    private TextView name;
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        name = (TextView) findViewById(R.id.Name);
 
+         sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
     }
 
@@ -60,6 +70,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
+
+        String userame = name.getText().toString();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.Username), userame);
+        editor.apply();
+
+        //Toast.makeText(this, "Username :" + userame, Toast.LENGTH_SHORT).show();
+
+        if(userame == null || userame.equals("")){
+            Toast.makeText(this, "Please Enter username" , Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(mFirebaseAuth.getCurrentUser() == null) {
             startActivityForResult(
                     AuthUI.getInstance()
